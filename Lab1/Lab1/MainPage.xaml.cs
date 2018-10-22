@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Plugin.LocalNotifications;
 using Xamarin.Forms;
 
@@ -19,7 +15,9 @@ namespace Lab1
         {
             CrossLocalNotifications.Current.Show(
                 title: "Very notification",
-                body: "Much notification"
+                body: "Much notification",
+                id: 100,
+                notifyTime: DateTime.Now.AddSeconds(5)
             );
         }
     }
