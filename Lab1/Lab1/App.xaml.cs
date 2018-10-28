@@ -1,5 +1,6 @@
 using System;
 using Plugin.LocalNotifications;
+using Plugin.Media;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 //using
@@ -12,8 +13,7 @@ namespace Lab1
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new MainPage());
         }
 
         protected override void OnStart()

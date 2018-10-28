@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:Lab1" x:Class="Lab1.MainPage">
     <StackLayout>
-        <Label Text="Yohohos" />
         <!-- Place new controls here -->
         <Button Text="Push notification"
-            VerticalOptions="StartAndExpand"
             HorizontalOptions="Center"
             Clicked="PushNotifBtnClicked" />
+       
+        <Entry x:Name="googleSearchEntry"
+               Placeholder="Google search here" />
+        <Button Text="Google search"
+            HorizontalOptions="Center"
+            Clicked="GoogleSearchBtnClicked" />
+        
+        <BoxView
+            HeightRequest="1" 
+            BackgroundColor="Black" 
+            HorizontalOptions="FillAndExpand" />
+        <Label Text="Camera: Front/Back"
+            HorizontalOptions="Center"/>
+        <Switch x:Name="cameraSwitch"
+            HorizontalOptions="Center"/>
+        <Button Text="Take photo"
+            HorizontalOptions="Center"
+            Clicked="TakePhoto" />
+        
+        <Button Text="Pick photo"
+            HorizontalOptions="Center"
+            Clicked="PickPhoto" />
+        
     </StackLayout>
 </ContentPage>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Lab1.CameraCapturePreview">
+<!--    <ContentPage.Content>-->
+        <Image
+            x:Name="CaptureImgBuf"
+            Aspect="AspectFit"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand" />
+<!--    </ContentPage.Content>-->
+</ContentPage>
