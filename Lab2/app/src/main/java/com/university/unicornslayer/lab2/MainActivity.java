@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-//        Calendar nextYear = Calendar.getInstance();
-//        nextYear.add(Calendar.YEAR, 1);
-//
-//        CalendarPickerView calendar = findViewById(R.id.calendar_view);
-//        Date today = new Date();
-//        calendar.init(today, nextYear.getTime())
-//                .withSelectedDate(today);
+        Calendar nextYear = Calendar.getInstance();
+        nextYear.add(Calendar.YEAR, 1);
+
+        CalendarPickerView calendar = findViewById(R.id.calendar_view);
+        Date today = new Date();
+        calendar.init(today, nextYear.getTime())
+                .withSelectedDate(today);
     }
 
     @Override

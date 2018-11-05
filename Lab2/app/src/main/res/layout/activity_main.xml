@@ -34,10 +34,10 @@
         app:menu="@menu/drawer_view"
         app:headerLayout="@layout/nav_header"/>
 
-    <!--<com.squareup.timessquare.CalendarPickerView-->
-        <!--android:id="@+id/calendar_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
+    <com.squareup.timessquare.CalendarPickerView
+        android:id="@+id/calendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.v4.widget.DrawerLayout>
 
