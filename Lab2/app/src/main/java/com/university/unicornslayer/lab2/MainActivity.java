@@ -1,5 +1,7 @@
 package com.university.unicornslayer.lab2;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -7,11 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.squareup.timessquare.CalendarPickerView;
 
@@ -19,6 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String ITEM_DATE_MSG = "item_date";
 
     private DrawerLayout mDrawerLayout;
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
+        assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     // set item as selected to persist highlight
                     menuItem.setChecked(true);
                     // close drawer when item is tapped
@@ -59,8 +60,21 @@ public class MainActivity extends AppCompatActivity {
                 new CalendarPickerView.CellClickInterceptor() {
                     @Override
                     public boolean onCellClicked(Date date) {
-                        Log.i("Id-- emil", "" + date);
-                        return false;
+                        Intent intent = new Intent(
+                                MainActivity.this,
+                                ItemViewActivity.class);
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
+
+                        Calendar today = Calendar.getInstance();
+                        cal.set(Calendar.HOUR_OF_DAY, today.get(Calendar.HOUR_OF_DAY));
+                        cal.set(Calendar.MINUTE, today.get(Calendar.MINUTE));
+                        date = cal.getTime();
+
+                        intent.putExtra(ITEM_DATE_MSG, date.getTime());
+                        startActivity(intent);
+                        return true;
                     }
                 }
         );
