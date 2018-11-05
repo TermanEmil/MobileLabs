@@ -7,7 +7,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.squareup.timessquare.CalendarPickerView;
 
@@ -50,6 +54,16 @@ public class MainActivity extends AppCompatActivity {
         Date today = new Date();
         calendar.init(today, nextYear.getTime())
                 .withSelectedDate(today);
+
+        calendar.setCellClickInterceptor(
+                new CalendarPickerView.CellClickInterceptor() {
+                    @Override
+                    public boolean onCellClicked(Date date) {
+                        Log.i("Id-- emil", "" + date);
+                        return false;
+                    }
+                }
+        );
     }
 
     @Override
