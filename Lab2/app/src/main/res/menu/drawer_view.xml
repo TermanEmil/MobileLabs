@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="single">
+        <!--<item-->
+            <!--android:id="@+id/nav_camera"-->
+            <!--&lt;!&ndash;android:icon="@drawable/ic_menu_camera"&ndash;&gt;-->
+            <!--android:title="@string/import" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_gallery"-->
+            <!--&lt;!&ndash;android:icon="@drawable/ic_menu_gallery"&ndash;&gt;-->
+            <!--android:title="@string/gallery" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_slideshow"-->
+            <!--&lt;!&ndash;android:icon="@drawable/ic_menu_slideshow"&ndash;&gt;-->
+            <!--android:title="@string/slideshow" />-->
+        <item
+            android:id="@+id/nav_manage"
+            android:titleCondensed="emil"
+            android:title="emil" />
+    </group>
+</menu>
