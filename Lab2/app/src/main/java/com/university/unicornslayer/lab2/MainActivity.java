@@ -64,14 +64,6 @@ public class MainActivity extends AppCompatActivity {
                                 MainActivity.this,
                                 ItemViewActivity.class);
 
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(date);
-
-                        Calendar today = Calendar.getInstance();
-                        cal.set(Calendar.HOUR_OF_DAY, today.get(Calendar.HOUR_OF_DAY));
-                        cal.set(Calendar.MINUTE, today.get(Calendar.MINUTE));
-                        date = cal.getTime();
-
                         intent.putExtra(ITEM_DATE_MSG, date.getTime());
                         startActivity(intent);
                         return true;

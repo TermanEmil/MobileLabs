@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Lab2</string>
+    <string name="notes_file">NotificationsStorage.json</string>
+    <string name="full_date_format">dd/MM/yyyy</string>
 </resources>

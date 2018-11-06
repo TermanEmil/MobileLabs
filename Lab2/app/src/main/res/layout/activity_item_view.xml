@@ -19,13 +19,54 @@
             android:text="Date"
             android:textSize="10pt"/>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Choose time"
-            android:textAllCaps="false"
-            android:onClick="onChooseTimeClick"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="New note"
+                android:layout_weight="1"
+                android:onClick="onNewNoteClick"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="Clear all"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#f2f2f2">
+
+            <LinearLayout
+                android:id="@+id/items_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No notes"
+                    android:textSize="12pt"
+                    android:gravity="center"
+                    android:textColor="#d4d4d4"/>
+
+                <!--<include layout="@layout/note_item"/>-->
+                <!--<include layout="@layout/note_item"/>-->
+                <!--<include layout="@layout/note_item"/>-->
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
