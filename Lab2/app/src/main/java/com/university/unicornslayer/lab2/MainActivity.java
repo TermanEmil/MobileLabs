@@ -13,14 +13,21 @@ import android.view.MenuItem;
 
 import com.squareup.timessquare.CalendarPickerView;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String ITEM_DATE_MSG = "item_date";
 
     private DrawerLayout mDrawerLayout;
+    private CalendarPickerView mCalendar;
+
+    private Calendar minCalendarDate;
+    private Calendar maxCalendarDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +55,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        Calendar nextYear = Calendar.getInstance();
-        nextYear.add(Calendar.YEAR, 1);
+        /*
+        ** Load Calendar View
+         */
 
-        CalendarPickerView calendar = findViewById(R.id.calendar_view);
+        minCalendarDate = Calendar.getInstance();
+        minCalendarDate.add(Calendar.YEAR, -1);
+
+        maxCalendarDate = Calendar.getInstance();
+        maxCalendarDate.add(Calendar.YEAR, 1);
+
+        mCalendar = findViewById(R.id.calendar_view);
+
         Date today = new Date();
-        calendar.init(today, nextYear.getTime())
-                .withSelectedDate(today);
+        mCalendar.init(minCalendarDate.getTime(), maxCalendarDate.getTime())
+                 .withSelectedDate(today);
 
-        calendar.setCellClickInterceptor(
+        mCalendar.setCellClickInterceptor(
                 new CalendarPickerView.CellClickInterceptor() {
                     @Override
                     public boolean onCellClicked(Date date) {
@@ -70,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        highlightDates();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        highlightDates();
     }
 
     @Override
@@ -80,5 +103,26 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void highlightDates() {
+        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
+        List<Note> notes;
+
+        try {
+            notes = noteManager.getNotes();
+        } catch (IOException e) {
+            new QuickWarning(this, "Failed to load the notes: " + e.getCause());
+            return;
+        }
+
+        mCalendar.clearHighlightedDates();
+
+        List<Date> notesToHighlight = notes.stream()
+                .map(x -> x.date)
+                .filter(x -> x.after(minCalendarDate.getTime()) && x.before(maxCalendarDate.getTime()))
+                .collect(Collectors.toList());
+
+        mCalendar.highlightDates(notesToHighlight);
     }
 }
