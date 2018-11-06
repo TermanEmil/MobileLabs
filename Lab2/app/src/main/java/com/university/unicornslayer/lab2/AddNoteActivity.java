@@ -80,8 +80,10 @@ public class AddNoteActivity extends AppCompatActivity {
             noteManager.setNote(note);
         } catch (Exception e)
         {
-            new QuickWarning(this, "Failed to save the note");
+            new QuickWarning(this, "Failed to save the note: " + e.getCause());
             return;
         }
+
+        finish();
     }
 }

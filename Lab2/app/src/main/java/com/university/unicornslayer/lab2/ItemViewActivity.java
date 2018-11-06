@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 public class ItemViewActivity extends AppCompatActivity {
 
@@ -39,6 +41,12 @@ public class ItemViewActivity extends AppCompatActivity {
         loadNotes();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadNotes();
+    }
+
     private void setDate(Date newDate)
     {
         mDate = newDate;
@@ -51,7 +59,7 @@ public class ItemViewActivity extends AppCompatActivity {
         List<Note> notes;
 
         try {
-            notes = noteManager.getNotes();
+            notes = noteManager.getNotesOnDay(mDate);
         } catch (Exception e) {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
@@ -60,19 +68,11 @@ public class ItemViewActivity extends AppCompatActivity {
         if (notes.size() == 0)
             return;
 
-        ViewGroup noteContainer = findViewById(R.id.items_scroll_view);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        ViewGroup noteContainer = findViewById(R.id.items_scroll_view);
+        noteContainer.removeAllViews();
 
-        boolean thereIsAtLeastOneItem = false;
         for (Note note : notes) {
-            if (!isTheSameDay(mDate, note.date))
-                continue;
-
-            if (!thereIsAtLeastOneItem) {
-                thereIsAtLeastOneItem = true;
-                noteContainer.removeAllViews();
-            }
-
             View noteItem = getLayoutInflater().inflate(R.layout.note_item, noteContainer, false);
 
             TextView contentView = noteItem.findViewById(R.id.note_content);
@@ -88,18 +88,6 @@ public class ItemViewActivity extends AppCompatActivity {
         }
     }
 
-    private static boolean isTheSameDay(Date date1, Date date2)
-    {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-
-        cal1.setTime(date1);
-        cal2.setTime(date2);
-
-        return  cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
-                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-    }
-
     public void onNewNoteClick(View view) {
         Intent intent = new Intent(this, AddNoteActivity.class);
 
@@ -113,5 +101,33 @@ public class ItemViewActivity extends AppCompatActivity {
 
         intent.putExtra(ITEM_DATE_MSG, date.getTime());
         startActivity(intent);
+    }
+
+    public void onClearAllClick(View view) {
+        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
+        List<Note> notes;
+
+        try {
+            notes = noteManager.getNotes();
+        } catch (Exception e) {
+            new QuickWarning(this, "Failed to load the notes: " + e.getCause());
+            return;
+        }
+
+        for (ListIterator<Note> iter = notes.listIterator(); iter.hasNext(); ) {
+            Note note = iter.next();
+
+            if (DateTools.isTheSameDay(mDate, note.date))
+                iter.remove();
+        }
+
+        try {
+            noteManager.writeListOfNotes(notes);
+        } catch (IOException e) {
+            new QuickWarning(this, "Failed to modify the notes: " + e.getCause());
+            return;
+        }
+
+        recreate();
     }
 }
