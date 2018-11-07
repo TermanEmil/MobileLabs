@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void highlightDates() {
         NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
-        List<Note> notes;
+        NotesMap notes;
 
         try {
             notes = noteManager.getNotes();
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCalendar.clearHighlightedDates();
 
-        List<Date> notesToHighlight = notes.stream()
+        List<Date> notesToHighlight = notes.values().stream()
                 .map(x -> x.date)
                 .filter(x -> x.after(minCalendarDate.getTime()) && x.before(maxCalendarDate.getTime()))
                 .collect(Collectors.toList());

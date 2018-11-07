@@ -8,6 +8,7 @@ import java.util.Date;
 
 class Note implements Serializable
 {
+    public Integer id;
     public String content;
     public Date date;
     public boolean notifyMe;

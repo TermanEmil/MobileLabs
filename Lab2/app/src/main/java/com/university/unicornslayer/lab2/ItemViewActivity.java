@@ -3,28 +3,29 @@ package com.university.unicornslayer.lab2;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.format.DateUtils;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ItemViewActivity extends AppCompatActivity {
-
-    public static final String ITEM_DATE_MSG = "item_date";
-
     private Date mDate = new Date();
     private TextView mDateView;
     private DateFormat mDateFormat;
+    private RecyclerView mRecyclerView;
+
+    private NoteManager mNoteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +33,15 @@ public class ItemViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_view);
 
         mDateFormat = new SimpleDateFormat(getString(R.string.full_date_format));
-        Intent intent = getIntent();
+        mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+
         mDateView = findViewById(R.id.date_text_view);
+        mRecyclerView = findViewById(R.id.recycler_view);
+
+        Intent intent = getIntent();
         mDate.setTime(intent.getLongExtra(MainActivity.ITEM_DATE_MSG, -1));
 
         setDate(mDate);
-
         loadNotes();
     }
 
@@ -55,41 +59,21 @@ public class ItemViewActivity extends AppCompatActivity {
 
     private void loadNotes()
     {
-        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
-        List<Note> notes;
+        NotesMap notes;
 
         try {
-            notes = noteManager.getNotesOnDay(mDate);
-        } catch (Exception e) {
+            notes = mNoteManager.getNotesOnDay(mDate);
+        } catch (IOException e) {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
         }
 
-        if (notes.size() == 0)
-            return;
-
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        ViewGroup noteContainer = findViewById(R.id.items_scroll_view);
-        noteContainer.removeAllViews();
-
-        for (Note note : notes) {
-            View noteItem = getLayoutInflater().inflate(R.layout.note_item, noteContainer, false);
-
-            TextView contentView = noteItem.findViewById(R.id.note_content);
-            contentView.setText(note.content);
-
-            TextView timeView = noteItem.findViewById(R.id.note_time);
-            timeView.setText(timeFormat.format(note.date));
-
-            TextView notifView = noteItem.findViewById(R.id.note_notif);
-            notifView.setText("Notif " + (note.notifyMe ? "ON" : "OFF"));
-
-            noteContainer.addView(noteItem);
-        }
+        List<Note> noteList = new ArrayList<>(notes.values());
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(noteList));
     }
 
     public void onNewNoteClick(View view) {
-        Intent intent = new Intent(this, AddNoteActivity.class);
+        Intent intent = new Intent(this, ViewNoteActivity.class);
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(mDate);
@@ -97,32 +81,31 @@ public class ItemViewActivity extends AppCompatActivity {
         Calendar today = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, today.get(Calendar.HOUR_OF_DAY));
         cal.set(Calendar.MINUTE, today.get(Calendar.MINUTE));
-        Date date = cal.getTime();
 
-        intent.putExtra(ITEM_DATE_MSG, date.getTime());
+        Note note = new Note();
+        note.content = "A notification";
+        note.date = cal.getTime();
+        note.notifyMe = false;
+
+        intent.putExtra("note", note);
+        intent.putExtra("add_as_new", true);
         startActivity(intent);
     }
 
     public void onClearAllClick(View view) {
-        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
-        List<Note> notes;
+        NotesMap notes;
 
         try {
-            notes = noteManager.getNotes();
+            notes = mNoteManager.getNotes();
         } catch (Exception e) {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
         }
 
-        for (ListIterator<Note> iter = notes.listIterator(); iter.hasNext(); ) {
-            Note note = iter.next();
-
-            if (DateTools.isTheSameDay(mDate, note.date))
-                iter.remove();
-        }
+        notes.entrySet().removeIf(x -> DateTools.isTheSameDay(mDate, x.getValue().date));
 
         try {
-            noteManager.writeListOfNotes(notes);
+            mNoteManager.writeNotes(notes);
         } catch (IOException e) {
             new QuickWarning(this, "Failed to modify the notes: " + e.getCause());
             return;

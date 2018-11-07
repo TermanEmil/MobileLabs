@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddNoteActivity">
+    tools:context=".ViewNoteActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/myCoordinatorLayout"
@@ -47,18 +47,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textOn="Notify me"
-                android:textOff="Don't notify me"/>
+                android:textAllCaps="false"
+                android:textOn="Notif is ON"
+                android:textOff="Notif is OFF"/>
 
             <Button
+                android:id="@+id/set_note_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Set note"
-                android:onClick="onSetNoteClick"/>
+                android:textAllCaps="false"
+                android:text="Done"
+                android:onClick="onDoneClick"/>
 
         </LinearLayout>
-
     </android.support.design.widget.CoordinatorLayout>
-
 </android.support.constraint.ConstraintLayout>

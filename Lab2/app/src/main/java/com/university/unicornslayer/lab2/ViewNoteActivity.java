@@ -1,8 +1,6 @@
 package com.university.unicornslayer.lab2;
 
-import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -12,31 +10,39 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class ViewNoteActivity extends AppCompatActivity {
 
-    private Date mDate = new Date();
+    private Note mNote;
     private TextView mDateView;
     private DateFormat mDateFormat;
+    private TextInputEditText mInputEditText;
+    private ToggleButton mToggleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_note);
+        setContentView(R.layout.activity_view_note);
 
         mDateFormat = new SimpleDateFormat(getString(R.string.full_date_format));
 
         Intent intent = getIntent();
+        mNote = (Note) intent.getSerializableExtra("note");
+
         mDateView = findViewById(R.id.date_text_view);
-        mDate.setTime(intent.getLongExtra(MainActivity.ITEM_DATE_MSG, -1));
+        mInputEditText = findViewById(R.id.input_text);
+        mToggleButton = findViewById(R.id.notification_toggle);
 
-        setDate(mDate);
+        updateDateView();
+        mInputEditText.setText(mNote.content);
+        mToggleButton.setChecked(mNote.notifyMe);
     }
-
 
     public void onChooseTimeClick(View view) {
         TimePickerDialog tp1 = new TimePickerDialog(
@@ -45,11 +51,12 @@ public class AddNoteActivity extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         Calendar cal = Calendar.getInstance();
-                        cal.setTime(mDate);
+                        cal.setTime(mNote.date);
                         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal.set(Calendar.MINUTE, minute);
+                        mNote.date = cal.getTime();
 
-                        setDate(cal.getTime());
+                        updateDateView();
                     }
                 },
                 Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
@@ -57,27 +64,19 @@ public class AddNoteActivity extends AppCompatActivity {
         tp1.show();
     }
 
-    private void setDate(Date newDate)
-    {
-        mDate = newDate;
-        mDateView.setText(mDateFormat.format(mDate));
+    private void updateDateView() {
+        mDateView.setText(mDateFormat.format(mNote.date));
     }
 
-    public void onSetNoteClick(View view) {
-        ToggleButton toggleButton = findViewById(R.id.notification_toggle);
-        TextInputEditText inputEditText = findViewById(R.id.input_text);
+    public void onDoneClick(View view) {
+        mNote.content = mInputEditText.getText().toString();
+        mNote.notifyMe = mToggleButton.isChecked();
 
-        Note note = new Note();
-        note.content = inputEditText.getText().toString();
-        note.date = mDate;
-        note.notifyMe = toggleButton.isChecked();
+        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
 
-        NoteManager noteManager = new NoteManager(
-                this,
-                getResources().getString(R.string.notes_file));
-
+        boolean addAsNew = getIntent().getBooleanExtra("add_as_new", true);
         try {
-            noteManager.setNote(note);
+            noteManager.setNote(mNote, addAsNew);
         } catch (Exception e)
         {
             new QuickWarning(this, "Failed to save the note: " + e.getCause());
