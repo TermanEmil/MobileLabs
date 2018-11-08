@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +19,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     private List<Note> mNotes;
     private NoteManager mNoteManager;
+    private DateFormat mDateFormat;
 
-    RecyclerViewAdapter(Context context, List<Note> notes) {
-        notes.sort((x, y) -> y.date.compareTo(x.date));
-        mNotes = notes;
+    RecyclerViewAdapter(Context context, String dateFormatStr) {
+        mNotes = new ArrayList<>();
         mNoteManager = new NoteManager(context, context.getString(R.string.notes_file));
+        mDateFormat = new SimpleDateFormat(dateFormatStr);
+    }
+
+    RecyclerViewAdapter(Context context) {
+        this(context, "HH:mm");
+    }
+
+    public void setNotes(List<Note> notes) {
+        mNotes = notes;
+        mNotes .sort((x, y) -> y.date.compareTo(x.date));
     }
 
     @NonNull
@@ -31,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         View v = LayoutInflater.from(viewGroup.getContext())
                                .inflate(R.layout.recycler_view_item, viewGroup, false);
 
-        RecyclerViewHolder item = new RecyclerViewHolder(v);
+        RecyclerViewHolder item = new RecyclerViewHolder(v, mDateFormat);
         item.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,6 +1,5 @@
 package com.university.unicornslayer.lab2;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,14 +8,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private static final DateFormat mHourMinuteFormat = new SimpleDateFormat("HH:mm");
+    private DateFormat mDateFormat;
 
     public Note note;
 
@@ -25,11 +22,12 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     Button deleteButton;
     ImageView notifImg;
 
-    public RecyclerViewHolder(@NonNull View itemView) {
+    public RecyclerViewHolder(@NonNull View itemView, DateFormat dateFormat) {
         super(itemView);
 
         itemView.setOnClickListener(this);
 
+        mDateFormat = dateFormat;
         noteContent = itemView.findViewById(R.id.note_content);
         time = itemView.findViewById(R.id.note_time);
         notifImg = itemView.findViewById(R.id.notif_img);
@@ -39,7 +37,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     // Do all the visual work.
     public void setNote(@NonNull Note note) {
         noteContent.setText(note.content);
-        time.setText(mHourMinuteFormat.format(note.date));
+        time.setText(mDateFormat.format(note.date));
         notifImg.setImageResource(
                 note.notifyMe ? R.drawable.alarm_on : R.drawable.alarm_off
         );

@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -15,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ItemViewActivity extends AppCompatActivity {
     private Date mDate = new Date();
@@ -33,8 +29,9 @@ public class ItemViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_view);
 
-        mDateFormat = new SimpleDateFormat(getString(R.string.full_date_format));
+        mDateFormat = new SimpleDateFormat(getString(R.string.date_format));
         mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+        mRecyclerAdapter = new RecyclerViewAdapter(this);
 
         mDateView = findViewById(R.id.date_text_view);
         mRecyclerView = findViewById(R.id.recycler_view);
@@ -71,7 +68,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
         List<Note> noteList = new ArrayList<>(notes.values());
 
-        mRecyclerAdapter = new RecyclerViewAdapter(this, noteList);
+        mRecyclerAdapter.setNotes(noteList);
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 

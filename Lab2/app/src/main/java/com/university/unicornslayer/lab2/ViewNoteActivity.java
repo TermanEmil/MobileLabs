@@ -10,12 +10,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class ViewNoteActivity extends AppCompatActivity {
 
@@ -30,7 +27,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
 
-        mDateFormat = new SimpleDateFormat(getString(R.string.full_date_format));
+        mDateFormat = new SimpleDateFormat(getString(R.string.date_format));
 
         Intent intent = getIntent();
         mNote = (Note) intent.getSerializableExtra("note");

@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ViewNoteActivity" />
-        <activity android:name=".ItemViewActivity"></activity>
+        <activity android:name=".ItemViewActivity" />
+        <activity android:name=".SearchNoteActivity"></activity>
     </application>
 
 </manifest>
