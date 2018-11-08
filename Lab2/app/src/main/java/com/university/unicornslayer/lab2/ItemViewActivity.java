@@ -26,6 +26,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     private NoteManager mNoteManager;
+    private RecyclerViewAdapter mRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,9 @@ public class ItemViewActivity extends AppCompatActivity {
         }
 
         List<Note> noteList = new ArrayList<>(notes.values());
-        mRecyclerView.setAdapter(new RecyclerViewAdapter(noteList));
+
+        mRecyclerAdapter = new RecyclerViewAdapter(this, noteList);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
     public void onNewNoteClick(View view) {
@@ -111,6 +114,6 @@ public class ItemViewActivity extends AppCompatActivity {
             return;
         }
 
-        recreate();
+        mRecyclerAdapter.removeAllViews();
     }
 }

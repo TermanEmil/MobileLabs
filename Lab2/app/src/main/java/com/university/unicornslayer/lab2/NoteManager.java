@@ -84,6 +84,12 @@ public class NoteManager {
         return id;
     }
 
+    public void removeNote(Integer noteId) throws IOException {
+        NotesMap notes = getNotes();
+        notes.remove(noteId);
+        writeNotes(notes);
+    }
+
     private void initFileIfNotExist() throws IOException {
         File file = getFile();
         if (!file.exists())
