@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*
         ** Load Calendar View
-         */
+        */
 
         minCalendarDate = Calendar.getInstance();
         minCalendarDate.add(Calendar.YEAR, -1);

@@ -20,6 +20,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private TextView mDateView;
     private DateFormat mDateFormat;
     private RecyclerView mRecyclerView;
+    private TextView mNoNotesMsgView;
 
     private NoteManager mNoteManager;
     private RecyclerViewAdapter mRecyclerAdapter;
@@ -35,6 +36,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
         mDateView = findViewById(R.id.date_text_view);
         mRecyclerView = findViewById(R.id.recycler_view);
+        mNoNotesMsgView = findViewById(R.id.no_notes_msg);
 
         Intent intent = getIntent();
         mDate.setTime(intent.getLongExtra(MainActivity.ITEM_DATE_MSG, -1));
@@ -67,6 +69,11 @@ public class ItemViewActivity extends AppCompatActivity {
         }
 
         List<Note> noteList = new ArrayList<>(notes.values());
+
+        if (noteList.size() == 0)
+            mNoNotesMsgView.setVisibility(View.VISIBLE);
+        else
+            mNoNotesMsgView.setVisibility(View.GONE);
 
         mRecyclerAdapter.setNotes(noteList);
         mRecyclerView.setAdapter(mRecyclerAdapter);

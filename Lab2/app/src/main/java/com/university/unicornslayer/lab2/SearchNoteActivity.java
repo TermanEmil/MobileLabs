@@ -1,5 +1,6 @@
 package com.university.unicornslayer.lab2;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -90,13 +91,25 @@ public class SearchNoteActivity extends AppCompatActivity {
 
         String[] tags = querry.toLowerCase().split("\\W+");
         if (!(tags.length == 1 && tags[0].equals("")) && tags.length != 0) {
-            notes = findNotesByTags(tags);
+            SearchNotesTask task = new SearchNotesTask();
+            SearchNotesModel model = new SearchNotesModel();
+
+            List<Note> allNotes;
+
+            try {
+                allNotes = new ArrayList<>(mNoteManager.getNotes().values());
+            } catch (IOException e) {
+                new QuickWarning(this, "Failed to load notes: " + e.getCause());
+                return;
+            }
+
+            model.notes = allNotes;
+            model.tags = tags;
+            notes = task.doInBackground(model);
+
             if (notes == null)
                 notes = new ArrayList<>();
-
         }
-
-        notes = notes.stream().limit(100).collect(Collectors.toList());
 
         if (notes.size() == 0)
             mNoNotesMsgView.setVisibility(View.VISIBLE);
@@ -106,21 +119,25 @@ public class SearchNoteActivity extends AppCompatActivity {
         mRecyclerAdapter.setNotes(notes);
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
+}
 
-    List<Note> findNotesByTags(String[] tags) {
-        List<Note> notes;
+class SearchNotesModel {
+    List<Note> notes;
+    String[] tags;
+}
 
-        try {
-            notes = new ArrayList<>(mNoteManager.getNotes().values());
-        } catch (IOException e) {
-            new QuickWarning(this, "Failed to load notes: " + e.getCause());
-            return null;
+class SearchNotesTask extends AsyncTask<SearchNotesModel, Void, List<Note>> {
+    @Override
+    protected List<Note> doInBackground(SearchNotesModel... searchNotesModels) {
+        List<Note> notes = new ArrayList<>();
+
+        for (SearchNotesModel model : searchNotesModels) {
+            notes.addAll(model.notes.stream().parallel()
+                    .filter(x -> wordsContainsItemFromList(x.content, model.tags))
+                    .collect(Collectors.toList()));
         }
 
-        return
-                notes.stream().parallel()
-                        .filter(x -> wordsContainsItemFromList(x.content, tags))
-                        .collect(Collectors.toList());
+        return notes;
     }
 
     private static boolean wordsContainsItemFromList(String inputStr, String[] items) {
