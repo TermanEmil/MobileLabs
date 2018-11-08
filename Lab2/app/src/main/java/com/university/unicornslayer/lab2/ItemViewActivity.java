@@ -84,6 +84,8 @@ public class ItemViewActivity extends AppCompatActivity {
         Calendar today = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, today.get(Calendar.HOUR_OF_DAY));
         cal.set(Calendar.MINUTE, today.get(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, today.get(Calendar.SECOND));
+        cal.set(Calendar.MILLISECOND, today.get(Calendar.MILLISECOND));
 
         Note note = new Note();
         note.content = "A notification";

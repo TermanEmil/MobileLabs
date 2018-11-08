@@ -20,9 +20,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     private NoteManager mNoteManager;
 
     RecyclerViewAdapter(Context context, List<Note> notes) {
-        notes.sort((x, y) -> -x.date.compareTo(y.date));
+        notes.sort((x, y) -> y.date.compareTo(x.date));
         mNotes = notes;
-
         mNoteManager = new NoteManager(context, context.getString(R.string.notes_file));
     }
 

@@ -3,11 +3,17 @@ package com.university.unicornslayer.lab2;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -15,11 +21,15 @@ import java.util.Scanner;
 public class NoteManager {
     private Context mContext;
     private String mFileName;
+    private Gson mGson;
 
     NoteManager(Context context, String fileName)
     {
         mContext = context;
         mFileName = fileName;
+
+        mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                .create();
     }
 
     private File getFile()
@@ -45,9 +55,7 @@ public class NoteManager {
         String fileContent = readFile();
 
         NotesMap notes;
-
-        Gson gson = new Gson();
-        notes = gson.fromJson(fileContent, new TypeToken<NotesMap>() {}.getType());
+        notes = mGson.fromJson(fileContent, new TypeToken<NotesMap>() {}.getType());
 
         return notes;
     }
@@ -61,9 +69,9 @@ public class NoteManager {
 
     public void writeNotes(NotesMap notes) throws IOException {
         FileWriter writer = new FileWriter(getFile());
-
-        Gson gson = new Gson();
-        writer.write(gson.toJson(notes));
+;
+        String notesToJson = mGson.toJson(notes);
+        writer.write(notesToJson);
         writer.flush();
         writer.close();
     }
