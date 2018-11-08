@@ -8,14 +8,16 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     private List<Note> mNotes;
-    private static final DateFormat mHourMinuteFormat = new SimpleDateFormat("HH:mm");
 
     RecyclerViewAdapter(List<Note> notes) {
+        notes.sort((x, y) -> -x.date.compareTo(y.date));
         mNotes = notes;
     }
 
@@ -29,14 +31,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int i) {
-        final Note note = mNotes.get(i);
-
-        recyclerViewHolder.noteContent.setText(note.content);
-        recyclerViewHolder.time.setText(mHourMinuteFormat.format(note.date));
-        recyclerViewHolder.notifImg.setImageResource(
-                note.notifyMe ? R.drawable.alarm_on : R.drawable.alarm_off
-        );
+    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int i) {
+        holder.setNote(mNotes.get(i));
     }
 
     @Override
