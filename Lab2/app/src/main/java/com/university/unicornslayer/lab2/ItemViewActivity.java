@@ -23,6 +23,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private TextView mNoNotesMsgView;
 
     private NoteManager mNoteManager;
+    private NotificationManager mNotificationManager;
     private RecyclerViewAdapter mRecyclerAdapter;
 
     @Override
@@ -32,6 +33,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
         mDateFormat = new SimpleDateFormat(getString(R.string.date_format));
         mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+        mNotificationManager = new NotificationManager(this);
         mRecyclerAdapter = new RecyclerViewAdapter(this);
 
         mDateView = findViewById(R.id.date_text_view);
@@ -110,6 +112,11 @@ public class ItemViewActivity extends AppCompatActivity {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
         }
+
+        notes.forEach((key, value) -> {
+            if (DateTools.isTheSameDay(mDate, value.date))
+                mNotificationManager.cancelNotification(value.id);
+        });
 
         notes.entrySet().removeIf(x -> DateTools.isTheSameDay(mDate, x.getValue().date));
 

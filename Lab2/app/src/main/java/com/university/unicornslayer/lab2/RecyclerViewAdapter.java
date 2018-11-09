@@ -19,11 +19,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     private List<Note> mNotes;
     private NoteManager mNoteManager;
+    private NotificationManager mNotificationManager;
     private DateFormat mDateFormat;
 
     RecyclerViewAdapter(Context context, String dateFormatStr) {
         mNotes = new ArrayList<>();
         mNoteManager = new NoteManager(context, context.getString(R.string.notes_file));
+        mNotificationManager = new NotificationManager(context);
         mDateFormat = new SimpleDateFormat(dateFormatStr);
     }
 
@@ -51,6 +53,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                 } catch (IOException e) {
                     new QuickWarning(v.getContext(), "Failed to modify the notes: " + e.getCause());
                 }
+
+                mNotificationManager.cancelNotification(item.note.id);
 
                 Note note = mNotes.stream().filter(x -> x.id == item.note.id).findFirst().get();
                 int position = mNotes.indexOf(note);

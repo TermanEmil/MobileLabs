@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.squareup.timessquare.CalendarPickerView;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Calendar minCalendarDate;
     private Calendar maxCalendarDate;
+
+    private NoteManager mNoteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,27 +52,32 @@ public class MainActivity extends AppCompatActivity {
                  .withSelectedDate(today);
 
         mCalendar.setCellClickInterceptor(
-                new CalendarPickerView.CellClickInterceptor() {
-                    @Override
-                    public boolean onCellClicked(Date date) {
-                        Intent intent = new Intent(
-                                MainActivity.this,
-                                ItemViewActivity.class);
+                date -> {
+                    Intent intent = new Intent(
+                            MainActivity.this,
+                            ItemViewActivity.class);
 
-                        intent.putExtra(ITEM_DATE_MSG, date.getTime());
-                        startActivity(intent);
-                        return true;
-                    }
+                    intent.putExtra(ITEM_DATE_MSG, date.getTime());
+                    startActivity(intent);
+                    return true;
                 }
         );
 
-        highlightDates();
+        mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+        NotesMap notesMap = mNoteManager.quickGetNotes();
+        highlightDates(notesMap);
+
+        // Schedule the notes.
+        if (notesMap != null) {
+            NotificationManager notifManager = new NotificationManager(this);
+            notesMap.values().parallelStream().forEach(notifManager::smartScheduleNote);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        highlightDates();
+        highlightDates(mNoteManager.quickGetNotes());
     }
 
     @Override
@@ -91,22 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void highlightDates() {
-        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
-        NotesMap notes;
-
-        try {
-            notes = noteManager.getNotes();
-        } catch (IOException e) {
-            new QuickWarning(this, "Failed to load the notes: " + e.getCause());
+    private void highlightDates(NotesMap notes) {
+        if (notes == null)
             return;
-        }
 
         mCalendar.clearHighlightedDates();
 

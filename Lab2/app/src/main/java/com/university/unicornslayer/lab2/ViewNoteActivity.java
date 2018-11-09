@@ -66,12 +66,15 @@ public class ViewNoteActivity extends AppCompatActivity {
     }
 
     public void onDoneClick(View view) {
+        NoteManager noteManager;
+        NotificationManager notificationManager;
+
         mNote.content = mInputEditText.getText().toString();
         mNote.notifyMe = mToggleButton.isChecked();
 
-        NoteManager noteManager = new NoteManager(this, getString(R.string.notes_file));
-
+        noteManager = new NoteManager(this, getString(R.string.notes_file));
         boolean addAsNew = getIntent().getBooleanExtra("add_as_new", true);
+
         try {
             noteManager.setNote(mNote, addAsNew);
         } catch (Exception e)
@@ -79,6 +82,9 @@ public class ViewNoteActivity extends AppCompatActivity {
             new QuickWarning(this, "Failed to save the note: " + e.getCause());
             return;
         }
+
+        notificationManager = new NotificationManager(this);
+        notificationManager.smartScheduleNote(mNote);
 
         finish();
     }

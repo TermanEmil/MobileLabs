@@ -37,6 +37,15 @@ public class NoteManager {
         return new File(mContext.getFilesDir(), mFileName);
     }
 
+    public NotesMap quickGetNotes() {
+        try {
+            return getNotes();
+        } catch (IOException e) {
+            new QuickWarning(mContext, "Failed to load the notes: " + e.getCause());
+            return null;
+        }
+    }
+
     public void setNote(Note note, boolean addAsNew) throws IOException {
         initFileIfNotExist();
 
