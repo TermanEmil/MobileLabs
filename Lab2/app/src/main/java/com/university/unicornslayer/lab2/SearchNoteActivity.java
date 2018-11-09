@@ -26,6 +26,8 @@ public class SearchNoteActivity extends AppCompatActivity {
     private NoteManager mNoteManager;
     private RecyclerViewAdapter mRecyclerAdapter;
 
+    private SearchNotesTask mSearchNotesTask = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,8 +89,6 @@ public class SearchNoteActivity extends AppCompatActivity {
     }
 
     void performSearch(String querry) {
-        List<Note> notes = new ArrayList<>();
-
         String[] tags = querry.toLowerCase().split("\\W+");
         if (!(tags.length == 1 && tags[0].equals("")) && tags.length != 0) {
             SearchNotesTask task = new SearchNotesTask();
@@ -105,12 +105,22 @@ public class SearchNoteActivity extends AppCompatActivity {
 
             model.notes = allNotes;
             model.tags = tags;
-            notes = task.doInBackground(model);
+            model.postExecute = () -> {
+                setNotes(task.resultingNotes);
+            };
 
-            if (notes == null)
-                notes = new ArrayList<>();
+            if (mSearchNotesTask != null) {
+                mSearchNotesTask.cancel(true);
+            }
+            mSearchNotesTask = task;
+
+            task.execute(model);
         }
+        else
+            setNotes(new ArrayList<>());
+    }
 
+    void setNotes(List<Note> notes) {
         if (notes.size() == 0)
             mNoNotesMsgView.setVisibility(View.VISIBLE);
         else
@@ -124,9 +134,15 @@ public class SearchNoteActivity extends AppCompatActivity {
 class SearchNotesModel {
     List<Note> notes;
     String[] tags;
+    Runnable postExecute;
+
 }
 
 class SearchNotesTask extends AsyncTask<SearchNotesModel, Void, List<Note>> {
+    List<Note> resultingNotes;
+
+    private List<Runnable> mPostExecutes;
+
     @Override
     protected List<Note> doInBackground(SearchNotesModel... searchNotesModels) {
         List<Note> notes = new ArrayList<>();
@@ -137,7 +153,16 @@ class SearchNotesTask extends AsyncTask<SearchNotesModel, Void, List<Note>> {
                     .collect(Collectors.toList()));
         }
 
+        mPostExecutes = Arrays.stream(searchNotesModels)
+                .map(x -> x.postExecute)
+                .collect(Collectors.toList());
         return notes;
+    }
+
+    @Override
+    protected void onPostExecute(List<Note> notes) {
+        resultingNotes = notes;
+        mPostExecutes.parallelStream().forEach(Runnable::run);
     }
 
     private static boolean wordsContainsItemFromList(String inputStr, String[] items) {
