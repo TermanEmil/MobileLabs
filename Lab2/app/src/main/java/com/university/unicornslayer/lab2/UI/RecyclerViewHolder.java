@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.UI;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,8 +8,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.university.unicornslayer.lab2.Note;
+import com.university.unicornslayer.lab2.R;
+
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

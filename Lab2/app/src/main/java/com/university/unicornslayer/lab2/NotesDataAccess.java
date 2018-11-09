@@ -4,26 +4,22 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.university.unicornslayer.lab2.Utils.DateTools;
+import com.university.unicornslayer.lab2.Utils.QuickWarning;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
-public class NoteManager {
+public class NotesDataAccess {
     private Context mContext;
     private String mFileName;
     private Gson mGson;
 
-    NoteManager(Context context, String fileName)
+    public NotesDataAccess(Context context, String fileName)
     {
         mContext = context;
         mFileName = fileName;

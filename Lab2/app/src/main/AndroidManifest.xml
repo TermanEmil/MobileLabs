@@ -9,7 +9,7 @@
         android:roundIcon="@drawable/scheduler_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +19,9 @@
 
         <receiver android:name=".NotificationPublisher" />
 
-        <activity android:name=".ViewNoteActivity" />
-        <activity android:name=".ItemViewActivity" />
-        <activity android:name=".SearchNoteActivity" />
+        <activity android:name=".UI.ViewNoteActivity" />
+        <activity android:name=".UI.ItemViewActivity" />
+        <activity android:name=".UI.SearchNoteActivity" />
 
     </application>
 

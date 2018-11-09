@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.UI;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.university.unicornslayer.lab2.Utils.DateTools;
+import com.university.unicornslayer.lab2.Note;
+import com.university.unicornslayer.lab2.NotesDataAccess;
+import com.university.unicornslayer.lab2.NotesMap;
+import com.university.unicornslayer.lab2.NotificationManager;
+import com.university.unicornslayer.lab2.Utils.QuickWarning;
+import com.university.unicornslayer.lab2.R;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -22,7 +30,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private TextView mNoNotesMsgView;
 
-    private NoteManager mNoteManager;
+    private NotesDataAccess mNotesDataAccess;
     private NotificationManager mNotificationManager;
     private RecyclerViewAdapter mRecyclerAdapter;
 
@@ -32,7 +40,7 @@ public class ItemViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_view);
 
         mDateFormat = new SimpleDateFormat(getString(R.string.date_format));
-        mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+        mNotesDataAccess = new NotesDataAccess(this, getString(R.string.notes_file));
         mNotificationManager = new NotificationManager(this);
         mRecyclerAdapter = new RecyclerViewAdapter(this);
 
@@ -64,7 +72,7 @@ public class ItemViewActivity extends AppCompatActivity {
         NotesMap notes;
 
         try {
-            notes = mNoteManager.getNotesOnDay(mDate);
+            notes = mNotesDataAccess.getNotesOnDay(mDate);
         } catch (IOException e) {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
@@ -107,7 +115,7 @@ public class ItemViewActivity extends AppCompatActivity {
         NotesMap notes;
 
         try {
-            notes = mNoteManager.getNotes();
+            notes = mNotesDataAccess.getNotes();
         } catch (Exception e) {
             new QuickWarning(this, "Failed to load the notes: " + e.getCause());
             return;
@@ -121,7 +129,7 @@ public class ItemViewActivity extends AppCompatActivity {
         notes.entrySet().removeIf(x -> DateTools.isTheSameDay(mDate, x.getValue().date));
 
         try {
-            mNoteManager.writeNotes(notes);
+            mNotesDataAccess.writeNotes(notes);
         } catch (IOException e) {
             new QuickWarning(this, "Failed to modify the notes: " + e.getCause());
             return;

@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.UI;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -9,6 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
+
+import com.university.unicornslayer.lab2.Note;
+import com.university.unicornslayer.lab2.NotesDataAccess;
+import com.university.unicornslayer.lab2.NotificationManager;
+import com.university.unicornslayer.lab2.Utils.QuickWarning;
+import com.university.unicornslayer.lab2.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -66,17 +72,17 @@ public class ViewNoteActivity extends AppCompatActivity {
     }
 
     public void onDoneClick(View view) {
-        NoteManager noteManager;
+        NotesDataAccess notesDataAccess;
         NotificationManager notificationManager;
 
         mNote.content = mInputEditText.getText().toString();
         mNote.notifyMe = mToggleButton.isChecked();
 
-        noteManager = new NoteManager(this, getString(R.string.notes_file));
+        notesDataAccess = new NotesDataAccess(this, getString(R.string.notes_file));
         boolean addAsNew = getIntent().getBooleanExtra("add_as_new", true);
 
         try {
-            noteManager.setNote(mNote, addAsNew);
+            notesDataAccess.setNote(mNote, addAsNew);
         } catch (Exception e)
         {
             new QuickWarning(this, "Failed to save the note: " + e.getCause());

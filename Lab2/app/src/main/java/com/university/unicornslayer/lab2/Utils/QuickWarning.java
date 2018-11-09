@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 
 public class QuickWarning {
 
-    QuickWarning(Context context, String msg)
+    public QuickWarning(Context context, String msg)
     {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
         builder1.setMessage(msg);

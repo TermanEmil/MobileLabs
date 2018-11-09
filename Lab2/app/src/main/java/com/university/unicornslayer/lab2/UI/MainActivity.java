@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.squareup.timessquare.CalendarPickerView;
+import com.university.unicornslayer.lab2.NotesDataAccess;
+import com.university.unicornslayer.lab2.NotesMap;
+import com.university.unicornslayer.lab2.NotificationManager;
+import com.university.unicornslayer.lab2.R;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Calendar minCalendarDate;
     private Calendar maxCalendarDate;
 
-    private NoteManager mNoteManager;
+    private NotesDataAccess mNotesDataAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        mNoteManager = new NoteManager(this, getString(R.string.notes_file));
-        NotesMap notesMap = mNoteManager.quickGetNotes();
+        mNotesDataAccess = new NotesDataAccess(this, getString(R.string.notes_file));
+        NotesMap notesMap = mNotesDataAccess.quickGetNotes();
         highlightDates(notesMap);
 
         // Schedule the notes.
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        highlightDates(mNoteManager.quickGetNotes());
+        highlightDates(mNotesDataAccess.quickGetNotes());
     }
 
     @Override

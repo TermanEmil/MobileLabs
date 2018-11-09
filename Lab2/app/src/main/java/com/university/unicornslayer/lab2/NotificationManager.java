@@ -35,7 +35,7 @@ public class NotificationManager {
         return true;
     }
 
-    public void scheduleNote(Note note) {
+    private void scheduleNote(Note note) {
 
         Notification notification = createNotification(note);
 

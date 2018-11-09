@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
-class Note implements Serializable
+public class Note implements Serializable
 {
     public Integer id;
     public String content;

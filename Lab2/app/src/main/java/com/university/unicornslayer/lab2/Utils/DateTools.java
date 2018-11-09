@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.Utils;
 
 import java.util.Calendar;
 import java.util.Date;

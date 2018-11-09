@@ -1,4 +1,4 @@
-package com.university.unicornslayer.lab2;
+package com.university.unicornslayer.lab2.UI;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.university.unicornslayer.lab2.Note;
+import com.university.unicornslayer.lab2.NotesDataAccess;
+import com.university.unicornslayer.lab2.Utils.QuickWarning;
+import com.university.unicornslayer.lab2.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ public class SearchNoteActivity extends AppCompatActivity {
     private TextView mNoNotesMsgView;
     private SearchView mSearchView;
 
-    private NoteManager mNoteManager;
+    private NotesDataAccess mNotesDataAccess;
     private RecyclerViewAdapter mRecyclerAdapter;
 
     private SearchNotesTask mSearchNotesTask = null;
@@ -40,7 +45,7 @@ public class SearchNoteActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mNoteManager = new NoteManager(this, getString(R.string.notes_file));
+        mNotesDataAccess = new NotesDataAccess(this, getString(R.string.notes_file));
         mRecyclerAdapter = new RecyclerViewAdapter(this, getString(R.string.full_date_format));
 
         mNoNotesMsgView.setVisibility(View.VISIBLE);
@@ -97,7 +102,7 @@ public class SearchNoteActivity extends AppCompatActivity {
             List<Note> allNotes;
 
             try {
-                allNotes = new ArrayList<>(mNoteManager.getNotes().values());
+                allNotes = new ArrayList<>(mNotesDataAccess.getNotes().values());
             } catch (IOException e) {
                 new QuickWarning(this, "Failed to load notes: " + e.getCause());
                 return;
