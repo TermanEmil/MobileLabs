@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String siteUrl = "https://www.moldcell.md/rom/sendsms";
     private final static String siteBaseUrl = "https://www.moldcell.md/";
 
-    private final static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36";
-
     private ProgressDialog mProgressDialog;
     private Document mWebDocument;
 
@@ -71,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.setProperty("https.proxyHost", "85.30.48.222");
-        System.setProperty("https.proxyPort", "30228");
+        System.setProperty("https.proxyHost", "89.250.19.173");
+        System.setProperty("https.proxyPort", "8080");
 
         loadWebDocument();
     }
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Document doInBackground(String... urls) {
             try {
-                return Jsoup.connect(urls[0]).userAgent(userAgent).validateTLSCertificates(false).get();
+                return Jsoup.connect(urls[0]).userAgent(getString(R.string.user_agent)).validateTLSCertificates(false).get();
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -336,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
                     .data("op", params.get("op"))
                     .data("form_build_id", params.get("form_build_id"))
                     .data("form_id", params.get("form_id"))
-                    .userAgent(userAgent)
+                    .userAgent(getString(R.string.user_agent))
                     .referrer(siteUrl)
                     .followRedirects(true)
                     .validateTLSCertificates(false)
